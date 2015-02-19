@@ -1,0 +1,122 @@
+HOST_IP=192.168.0.122
+
+SERVICE_TOKEN=999888777666
+ADMIN_PASSWORD=admin
+SERVICE_PASSWORD=$ADMIN_PASSWORD
+MYSQL_PASSWORD=$ADMIN_PASSWORD
+RABBIT_PASSWORD=$ADMIN_PASSWORD
+
+disable_all_services
+
+
+# Keystone
+enable_service key
+enable_service mysql
+enable_service memcached
+
+KEYSTONE_TOKEN_FORMAT=UUID
+KEYSTONE_TOKEN_BACKEND=memcache
+KEYSTONE_CATALOG_BACKEND=sql
+KEYSTONE_IDENTITY_BACKEND=sql
+KEYSTONE_ASSIGNMENT_BACKEND=sql
+
+
+# Glance
+enable_service g-api g-reg
+
+
+# Cinder
+enable_service cinder
+enable_service c-api c-vol
+VOLUME_GROUP=stack-volumes
+#VOLUME_GROUP2=stack-volumes2
+#CINDER_MULTI_LVM_BACKEND=True
+#BACKING_FILE_SIZE=2048M
+
+# Nova
+disable_service n-net
+enable_service nova
+enable_service n-api n-sch n-cpu n-cond n-cauth n-crt
+disable_service n-cell
+
+disable_service n-novnc
+disable_service n-xvnc
+
+enable_service n-spice
+
+VIRT_DRIVER=libvirt
+LIBVIRT_TYPE=qemu
+#NOVA_CELLS_DB=nova-cell
+API_RATE_LIMIT=True
+
+EXTRA_OPTS=(
+vnc_keymap=ja
+enable_instance_password=True
+)
+
+
+# Neutron
+disable_service n-net
+enable_service neutron q-svc q-agt q-dhcp q-l3 q-meta
+enable_service q-fwaas q-vpn q-metering
+
+Q_PLUGIN=ml2
+ENABLE_TENANT_TUNNELS=True
+Q_AGENT=openvswitch
+Q_ML2_PLUGIN_MECHANISM_DRIVERS=openvswitch,linuxbridge
+Q_ML2_PLUGIN_TYPE_DRIVERS=local,flat,vlan,gre,vxlan
+TENANT_TUNNEL_RANGES=1:1000
+#Q_ML2_PLUGIN_GRE_TYPE_OPTIONS=tunnel_id_ranges=$TENANT_TUNNEL_RANGES
+
+#ENABLE_TENANT_VLANS=True
+#Q_ML2_PLUGIN_VLAN_TYPE_OPTIONS=network_vlan_ranges=$ML2_VLAN_RANGES
+#Q_ML2_TENANT_NETWORK_TYPE=vxlan
+#Q_ML2_PLUGIN_VXLAN_TYPE_OPTIONS=vni_ranges=1001:2000
+
+Q_OVS_USE_VETH=False
+Q_USE_NAMESPACE=True
+Q_ALLOW_OVERLAPPING_IP=True
+
+FIXED_RANGE=10.0.0.0/24
+FLOATING_RANGE=192.168.0.0/24
+Q_FLOATING_ALLOCATION_POOL=start=192.168.0.200,end=192.168.0.250
+
+NETWORK_GATEWAY=10.0.0.1
+PUBLIC_NETWORK_GATEWAY=192.168.0.1
+PUBLIC_SUBNET_NAME="public-subnet"
+PRIVATE_SUBNET_NAME="private-subnet"
+
+# Heat
+HEAT_STANDALONE=True
+enable_service heat h-api h-api-cfn h-api-cw h-eng
+
+
+# Ceilometer
+enable_service ceilometer-acompute ceilometer-acentral ceilometer-anotification
+enable_service ceilometer-collector ceilometer-api
+
+enable_service ceilometer-alarm-notifier ceilometer-alarm-evaluator
+
+CEILOMETER_BACKEND=mysql
+
+
+# Tempest
+enable_service tempest
+
+
+# Horizon
+enable_service apache
+enable_service horizon
+
+#sahara
+
+enable_service sahara
+
+# etc
+enable_service rabbit
+#APACHE_ENABLED_SERVICES+=keystone
+
+LOGFILE=stack.sh.log
+SCREEN_LOGDIR=/opt/stack/logs
+
+

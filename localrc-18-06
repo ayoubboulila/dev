@@ -1,0 +1,158 @@
+HOST_IP=172.16.0.2
+
+SERVICE_TOKEN=999888777666
+ADMIN_PASSWORD=admin
+SERVICE_PASSWORD=$ADMIN_PASSWORD
+MYSQL_PASSWORD=$ADMIN_PASSWORD
+RABBIT_PASSWORD=$ADMIN_PASSWORD
+
+disable_all_services
+
+
+# Keystone
+enable_service key
+enable_service mysql
+enable_service memcached
+
+KEYSTONE_TOKEN_FORMAT=UUID
+KEYSTONE_TOKEN_BACKEND=memcache
+KEYSTONE_CATALOG_BACKEND=sql
+KEYSTONE_IDENTITY_BACKEND=sql
+KEYSTONE_ASSIGNMENT_BACKEND=sql
+
+
+# Glance
+enable_service g-api g-reg
+
+
+# Cinder
+enable_service cinder
+enable_service c-api c-vol
+VOLUME_GROUP=stack-volumes
+
+#VOLUME_GROUP2=stack-volumes2
+#CINDER_MULTI_LVM_BACKEND=True
+#BACKING_FILE_SIZE=2048M
+
+# Nova
+disable_service n-net
+enable_service nova
+enable_service n-api n-sch n-cpu n-cond n-cauth n-crt
+disable_service n-cell
+
+enable_service n-novnc
+disable_service n-xvnc
+
+disable_service n-spice
+
+VIRT_DRIVER=libvirt
+LIBVIRT_TYPE=qemu
+#NOVA_CELLS_DB=nova-cell
+API_RATE_LIMIT=True
+
+
+
+EXTRA_OPTS=(
+vnc_keymap=ja
+enable_instance_password=True
+auto_assign_floating_ip=True
+)
+
+
+#OFFLINE=True
+
+# Neutron
+disable_service n-net
+enable_service neutron q-svc q-agt q-dhcp q-l3 q-meta
+enable_service q-vpn q-metering q-lbaas
+
+Q_PLUGIN=ml2
+ENABLE_TENANT_TUNNELS=True
+Q_AGENT=openvswitch
+Q_ML2_PLUGIN_MECHANISM_DRIVERS=openvswitch,linuxbridge
+Q_ML2_PLUGIN_TYPE_DRIVERS=local,flat,vlan,gre,vxlan
+TENANT_TUNNEL_RANGES=1:1000
+#Q_ML2_PLUGIN_GRE_TYPE_OPTIONS=tunnel_id_ranges=$TENANT_TUNNEL_RANGES
+ 
+#ENABLE_TENANT_VLANS=True
+#Q_ML2_PLUGIN_VLAN_TYPE_OPTIONS=network_vlan_ranges=$ML2_VLAN_RANGES
+#Q_ML2_TENANT_NETWORK_TYPE=vxlan
+#Q_ML2_PLUGIN_VXLAN_TYPE_OPTIONS=vni_ranges=1001:2000
+ 
+Q_OVS_USE_VETH=False
+Q_USE_NAMESPACE=True
+Q_ALLOW_OVERLAPPING_IP=True
+
+# Disable security groups
+Q_USE_SECGROUP=False
+LIBVIRT_FIREWALL_DRIVER=nova.virt.firewall.NoopFirewallDriver
+
+FLAT_INTERFACE=eth0
+GUEST_INTERFACE=eth0
+
+PUBLIC_INTERFACE=eth1
+
+#FIXED_RANGE=10.0.2.0/24
+#FLOATING_RANGE=172.16.0.254/27
+
+#PUBLIC_SUBNET_NAME="public-subnet"
+#PRIVATE_SUBNET_NAME="private-subnet"
+
+# Heat
+HEAT_STANDALONE=false
+enable_service heat h-api h-api-cfn h-api-cw h-eng
+#HEAT_REPO=https://github.com/openstack/heat
+
+#HEAT_BRANCH=stable/icehouse
+
+
+# Ceilometer
+enable_service ceilometer-acompute ceilometer-acentral ceilometer-anotification
+enable_service ceilometer-collector ceilometer-api
+
+enable_service ceilometer-alarm-notifier ceilometer-alarm-evaluator
+
+CEILOMETER_BACKEND=mysql
+
+
+# Tempest
+enable_service tempest
+
+
+# Horizon
+enable_service apache
+enable_service horizon
+
+
+#sahara
+
+enable_service sahara
+
+#SAHARA_REPO=https://github.com/openstack/sahara
+
+
+#Trove
+
+enable_service trove tr-api tr-tmgr tr-cond
+
+# Branches
+KEYSTONE_BRANCH=stable/icehouse
+NOVA_BRANCH=stable/icehouse
+NEUTRON_BRANCH=stable/icehouse
+SWIFT_BRANCH=stable/icehouse
+GLANCE_BRANCH=stable/icehouse
+CINDER_BRANCH=stable/icehouse
+HEAT_BRANCH=stable/icehouse
+TROVE_BRANCH=stable/icehouse
+HORIZON_BRANCH=stable/icehouse
+SAHARA_BRANCH=stable/icehouse
+
+
+# etc
+enable_service rabbit
+#APACHE_ENABLED_SERVICES+=keystone
+
+LOGFILE=stack.sh.log
+SCREEN_LOGDIR=/opt/stack/logs
+
+
