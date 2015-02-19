@@ -40,10 +40,10 @@ enable_service nova
 enable_service n-api n-sch n-cpu n-cond n-cauth n-crt
 disable_service n-cell
 
-enable_service n-novnc
+disable_service n-novnc
 disable_service n-xvnc
 
-disable_service n-spice
+enable_service n-spice
 
 VIRT_DRIVER=libvirt
 LIBVIRT_TYPE=qemu
