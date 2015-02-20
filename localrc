@@ -34,6 +34,11 @@ VOLUME_GROUP=stack-volumes
 #CINDER_MULTI_LVM_BACKEND=True
 #BACKING_FILE_SIZE=2048M
 
+#Swift
+SWIFT_REPLICAS=1
+SWIFT_HASH=011688b44136573e209e
+enable_service s-proxy s-object s-container s-account
+
 # Nova
 disable_service n-net
 enable_service nova
